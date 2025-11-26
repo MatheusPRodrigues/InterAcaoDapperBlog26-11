@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="Blog.SQL/Blog.SQL.sqlproj">
+    <Build />
+    <Deploy />
+  </Project>
+  <Project Path="Blog/Blog.API.csproj" />
+</Solution>
