@@ -1,4 +1,6 @@
-﻿namespace Blog.API.Models.DTOs.User
+﻿using Blog.API.Models.DTOs.Role;
+
+namespace Blog.API.Models.DTOs.User
 {
     public class UserResponseDTO
     {
@@ -7,6 +9,6 @@
         public string Bio { get; set; }
         public string Image { get; set; }
         public string Slug { get; set; }
-        public List<string> RolesName { get; set; }
+        public List<RoleResponseDTO> Roles { get; set; } = new ();
     }
 }

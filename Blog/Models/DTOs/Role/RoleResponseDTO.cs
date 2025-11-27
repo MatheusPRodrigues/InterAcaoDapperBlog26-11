@@ -1,8 +1,11 @@
-﻿namespace Blog.API.Models.DTOs.Role
+﻿using Blog.API.Models.DTOs.User;
+
+namespace Blog.API.Models.DTOs.Role
 {
     public class RoleResponseDTO
     {
         public string Name { get; set; }
         public string Slug { get; set; }
+        public List<UserResponseDTO> Users{ get; set; } = new ();
     }
 }

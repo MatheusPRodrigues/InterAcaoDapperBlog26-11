@@ -1,5 +1,6 @@
 ﻿using Blog.API.Data;
 using Blog.API.Models;
+using Blog.API.Models.DTOs.Role;
 using Blog.API.Models.DTOs.User;
 using Blog.API.Repositories.Interfaces;
 using Dapper;
@@ -55,13 +56,13 @@ namespace Blog.API.Repositories
         public async Task<List<UserResponseDTO>> GetAllUsersAsync()
         {
             var sql = @"SELECT 
-                            u.Id,
                             u.Name,
                             u.Email,
                             u.Bio,
                             u.Image,
                             u.Slug,
-                            r.Name AS RoleName
+                            r.Slug,
+                            r.Name
                         FROM [User] u
                         JOIN UserRole ur 
                         ON ur.UserId = u.Id
@@ -69,34 +70,22 @@ namespace Blog.API.Repositories
                         ON r.Id = ur.RoleId
                         ";
 
-            var lookup = new Dictionary<int, UserResponseDTO>();
-
-            await _connection.QueryAsync<UserDTO, string, UserDTO>(
-                sql,
-                (user, roleName) =>
+            var users = await _connection.QueryAsync<UserResponseDTO, RoleResponseDTO, UserResponseDTO>
+                (sql, (user, role) =>
                 {
-                    if (!lookup.TryGetValue(user.Id, out var dto))
-                    {
-                        dto = new UserResponseDTO
-                        {
-                            Name = user.Name,
-                            Email = user.Email,
-                            Bio = user.Bio,
-                            Image = user.Image,
-                            Slug = user.Slug,
-                            RolesName = new List<string>()
-                        };
-                        lookup.Add(user.Id, dto);
-                    }
-                    dto.RolesName.Add(roleName);
-
+                    user.Roles.Add(role);
                     return user;
                 },
-                splitOn: "RoleName"
-            );
+                splitOn: "Slug");
 
-            var users = lookup.Values.ToList();
-            return users;
+            var result = users.GroupBy(u => u.Slug).Select(g =>
+            {
+                var groupedUser = g.First();
+                groupedUser.Roles = g.Select(u => u.Roles.Single()).ToList();
+                return groupedUser;
+            });
+
+            return result.ToList();
         }
 
         public async Task<UserResponseDTO> GetUserByEmailAsync(string slug)
@@ -117,33 +106,34 @@ namespace Blog.API.Repositories
                         WHERE u.Slug = @Slug
                         ";
 
-            var lookup = new Dictionary<int, UserResponseDTO>();
+            //var lookup = new Dictionary<int, UserResponseDTO>();
 
-            await _connection.QueryAsync<UserDTO, string, UserDTO>(
-                sql,
-                (user, roleName) =>
-                {
-                    if (!lookup.TryGetValue(user.Id, out var dto))
-                    {
-                        dto = new UserResponseDTO
-                        {
-                            Name = user.Name,
-                            Email = user.Email,
-                            Bio = user.Bio,
-                            Image = user.Image,
-                            Slug = user.Slug,
-                            RolesName = new List<string>()
-                        };
-                        lookup.Add(user.Id, dto);
-                    }
-                    dto.RolesName.Add(roleName);
-                    return user;
-                },
-                new { Slug = slug },
-                splitOn: "RoleName"
-            );
+            //await _connection.QueryAsync<UserDTO, string, UserDTO>(
+            //    sql,
+            //    (user, roleName) =>
+            //    {
+            //        if (!lookup.TryGetValue(user.Id, out var dto))
+            //        {
+            //            dto = new UserResponseDTO
+            //            {
+            //                Name = user.Name,
+            //                Email = user.Email,
+            //                Bio = user.Bio,
+            //                Image = user.Image,
+            //                Slug = user.Slug,
+            //                RolesName = new List<string>()
+            //            };
+            //            lookup.Add(user.Id, dto);
+            //        }
+            //        dto.RolesName.Add(roleName);
+            //        return user;
+            //    },
+            //    new { Slug = slug },
+            //    splitOn: "RoleName"
+            //);
 
-            return lookup.Values.FirstOrDefault();
+            //return lookup.Values.FirstOrDefault();
+            throw new NotImplementedException();
         }
 
         public async Task<int> GetUserIdAsync(string slug)
