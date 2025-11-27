@@ -20,6 +20,9 @@ builder.Services.AddSingleton<RoleService>();
 builder.Services.AddSingleton<TagRepository>();
 builder.Services.AddSingleton<TagService>();
 
+builder.Services.AddSingleton<UserRepository>();
+builder.Services.AddSingleton<UserService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
