@@ -1,4 +1,6 @@
-﻿namespace Blog.API.Models
+﻿using System.Text.Json.Serialization;
+
+namespace Blog.API.Models
 {
     public class Category
     {

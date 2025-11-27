@@ -1,5 +1,5 @@
 <Solution>
-  <Project Path="Blog.SQL/Blog.SQL.sqlproj">
+  <Project Path="Blog.SQL/Blog.SQL.sqlproj" Id="9342a7e9-5c47-4cc3-a74a-e4c17e4f628c">
     <Build />
     <Deploy />
   </Project>

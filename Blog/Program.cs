@@ -1,4 +1,6 @@
 using Blog.API.Data;
+using Blog.API.Repositories;
+using Blog.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,8 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-// garante somente uma instância da classe ConnectionDB
+// garante somente uma instância da classe ConnectionDB na aplicação
 builder.Services.AddSingleton<ConnectionDB>();
+builder.Services.AddSingleton<CategoryRepository>();
+builder.Services.AddSingleton<CategoryService>();
 
 var app = builder.Build();
 
