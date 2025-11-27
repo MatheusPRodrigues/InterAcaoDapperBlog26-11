@@ -1,4 +1,4 @@
-﻿namespace Blog.API.Models.DTOs
+﻿namespace Blog.API.Models.DTOs.Category
 {
     public class CategoryResponseDTO
     {

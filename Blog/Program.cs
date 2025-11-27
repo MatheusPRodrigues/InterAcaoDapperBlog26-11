@@ -10,8 +10,12 @@ builder.Services.AddControllers();
 
 // garante somente uma instância da classe ConnectionDB na aplicação
 builder.Services.AddSingleton<ConnectionDB>();
+
 builder.Services.AddSingleton<CategoryRepository>();
 builder.Services.AddSingleton<CategoryService>();
+
+builder.Services.AddSingleton<RoleRepository>();
+builder.Services.AddSingleton<RoleService>();
 
 var app = builder.Build();
 
